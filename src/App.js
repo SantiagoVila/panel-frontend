@@ -1,19 +1,22 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import io from 'socket.io-client'; // Importar Socket.IO Client
+
+const socket = io('http://localhost:5000'); // Conectar a Socket.IO en el backend
 
 function App() {
     const [mensajes, setMensajes] = useState([]);
 
     useEffect(() => {
-        // Llamar a la API del backend para obtener los mensajes
-        axios.get('http://localhost:3000/api/mensajes')
-            .then(response => {
-                setMensajes(response.data);
-            })
-            .catch(error => {
-                console.error('Error al obtener los mensajes:', error);
-            });
+        // Escuchar el evento 'mensajes' de Socket.IO
+        socket.on('mensajes', (data) => {
+            setMensajes(data); // Actualizar los mensajes en tiempo real
+        });
+
+        // Limpiar la conexión cuando el componente se desmonte
+        return () => {
+            socket.off('mensajes');
+        };
     }, []);
 
     return (
@@ -32,3 +35,4 @@ function App() {
 }
 
 export default App;
+
