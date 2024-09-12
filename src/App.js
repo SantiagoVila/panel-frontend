@@ -10,6 +10,7 @@ function App() {
     useEffect(() => {
         // Escuchar el evento 'mensajes' de Socket.IO
         socket.on('mensajes', (data) => {
+          console.log('Mensajes recibidos desde el servidor:', data); // Log para verificar
             setMensajes(data); // Actualizar los mensajes en tiempo real
         });
 
